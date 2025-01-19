@@ -3,11 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Generate Single-Use Link</title>
+  <title>Redirect with Single-Use Link</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       margin: 20px;
+      text-align: center;
     }
     h1 {
       color: #333;
@@ -23,60 +24,47 @@
     button:hover {
       background-color: #0056b3;
     }
-    .output {
+    .message {
       margin-top: 20px;
       font-size: 1.2em;
     }
   </style>
   <script>
-    var getUrlParameter = function getUrlParameter(sParam) {
-        var sPageURL = window.location.search.substring(1),
-            sURLVariables = sPageURL.split('&'),
-            sParameterName,
-            i;
-    
-        for (i = 0; i < sURLVariables.length; i++) {
-            sParameterName = sURLVariables[i].split('=');
-    
-            if (sParameterName[0] === sParam) {
-                return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
-            }
-        }
-        return false;
-    };
-    function generateLink() {
+    function generateAndRedirect() {
       // Google Apps Script Web App URL
       const webAppUrl = "https://script.google.com/macros/s/AKfycbzGM__-N_4QwcIFxDr-pd9qeNPQJsqjou2odPSCqUz7vlvgHXSsW4VcDofMC4z1d3Pv/exec";
 
       // Get the URL input from the user
-      const targetUrl = getUrlParameter('s');
+      const targetUrl = document.getElementById("urlInput").value.trim();
       if (!targetUrl) {
         alert("Please enter a valid URL.");
         return;
       }
 
       // Show a loading message
-      document.getElementById("output").innerHTML = "Generating link, please wait...";
+      document.getElementById("message").innerHTML = "Generating link, please wait...";
 
       // Make the API call to generate the single-use link
       fetch(`${webAppUrl}?action=generate&url=${encodeURIComponent(targetUrl)}`)
         .then(response => response.text())
         .then(data => {
-          location.href = data;
+          // Redirect to the generated link
+          document.getElementById("message").innerHTML = "Redirecting...";
+          window.location.href = data;
         })
         .catch(error => {
           console.error("Error:", error);
-          document.getElementById("output").innerHTML = "An error occurred while generating the link.";
+          document.getElementById("message").innerHTML = "An error occurred while generating the link.";
         });
     }
   </script>
 </head>
 <body>
-  <h1>Generate a Single-Use Link</h1>
+  <h1>Redirect with Single-Use Link</h1>
   <label for="urlInput">Enter the URL to redirect to:</label><br>
   <input type="text" id="urlInput" placeholder="https://example.com" style="width: 100%; padding: 10px; margin: 10px 0;"><br>
-  <button onclick="generateLink()">Generate Link</button>
+  <button onclick="generateAndRedirect()">Generate and Redirect</button>
 
-  <div id="output" class="output"></div>
+  <div id="message" class="message"></div>
 </body>
 </html>
