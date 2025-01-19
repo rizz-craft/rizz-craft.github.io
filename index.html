@@ -3,31 +3,32 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Single-Use Redirect</title>
+  <title>Generate Single-Use Link</title>
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      // Extract the token from the query string
-      const token = new URLSearchParams(window.location.search).get("token");
+    function generateLink() {
+      // Get the target URL for redirection (this can be dynamic)
+      const targetUrl = "https://example.com";
 
-      if (!token) {
-        document.body.innerHTML = "<h1>Invalid link</h1>";
-        return;
-      }
+      // Your Google Apps Script Web App URL
+      const webAppUrl = "https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec";
 
-      // Make a request to the backend to validate and redirect
-      fetch(`https://script.google.com/macros/s/AKfycbyDOlDgBZ14UWd3DddpqQ_g5d53iEQaf_WyhHhqWPyDHkMaXI0C9-AD_1UNZKijRpqx/exec?token=${token}`)
-        .then(response => response.text())
-        .then(html => {
-          document.body.innerHTML = html; // Backend returns redirect or error message
+      // Make the GET request to the Google Apps Script API
+      fetch(`${webAppUrl}?action=generate&url=${encodeURIComponent(targetUrl)}`)
+        .then(response => response.text())  // Get the link as text
+        .then(data => {
+          console.log("Generated Link:", data);  // Show the link
+          document.getElementById("generated-link").innerHTML = `Your generated link: <a href="${data}" target="_blank">${data}</a>`;
         })
         .catch(error => {
           console.error("Error:", error);
-          document.body.innerHTML = "<h1>Something went wrong. Please try again later.</h1>";
+          alert("Something went wrong. Please try again.");
         });
-    });
+    }
   </script>
 </head>
 <body>
-  <h1>Validating...</h1>
+  <h1>Generate Single-Use Link</h1>
+  <button onclick="generateLink()">Generate Link</button>
+  <div id="generated-link"></div>
 </body>
 </html>
