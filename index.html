@@ -29,25 +29,27 @@
     }
   </style>
   <script>
-    function GetURLParameter(sParam)
-    {
-        var sPageURL = window.location.search.substring(1);
-        var sURLVariables = sPageURL.split('&');
-        for (var i = 0; i < sURLVariables.length; i++) 
-        {
-            var sParameterName = sURLVariables[i].split('=');
-            if (sParameterName[0] == sParam) 
-            {
-                return sParameterName[1];
+    var getUrlParameter = function getUrlParameter(sParam) {
+        var sPageURL = window.location.search.substring(1),
+            sURLVariables = sPageURL.split('&'),
+            sParameterName,
+            i;
+    
+        for (i = 0; i < sURLVariables.length; i++) {
+            sParameterName = sURLVariables[i].split('=');
+    
+            if (sParameterName[0] === sParam) {
+                return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
             }
         }
-    }​
+        return false;
+    };
     function generateLink() {
       // Google Apps Script Web App URL
       const webAppUrl = "https://script.google.com/macros/s/AKfycbzGM__-N_4QwcIFxDr-pd9qeNPQJsqjou2odPSCqUz7vlvgHXSsW4VcDofMC4z1d3Pv/exec";
 
       // Get the URL input from the user
-      const targetUrl = GetURLParameter('s')
+      const targetUrl = getURLParameter('s')
       if (!targetUrl) {
         alert("Please enter a valid URL.");
         return;
