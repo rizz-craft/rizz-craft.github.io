@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fetch Iframe with CORS Proxy</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        iframe {
+            width: 100%;
+            height: 600px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <h1>Fetch and Display an Iframe</h1>
+    <div id="iframe-container">
+        <p>Loading iframe...</p>
+    </div>
+
+    <script>
+        async function fetchAndDisplayIframe() {
+            const corsProxy = "https://cors-anywhere-qrne.onrender.com/"; // Replace with your Render-deployed proxy URL
+            const targetUrl = "https://portal.averillcreek.ca/mastery?auth=jw37754"; // Target URL
+
+            try {
+                // Fetch the target URL through the proxy
+                const response = await fetch(corsProxy + targetUrl);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                // Get the HTML text of the target page
+                const htmlText = await response.text();
+
+                // Parse the HTML to find the iframe with ID "siteurl"
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(htmlText, "text/html");
+                const iframe = doc.getElementById("siteurl");
+
+                if (iframe) {
+                    // Clone the iframe and append it to the current document
+                    const clonedIframe = document.importNode(iframe, true);
+                    const container = document.getElementById("iframe-container");
+                    container.innerHTML = ""; // Clear the container
+                    container.appendChild(clonedIframe);
+                } else {
+                    throw new Error('Iframe with ID "siteurl" not found.');
+                }
+            } catch (error) {
+                console.error("Error fetching or displaying the iframe:", error);
+                document.getElementById("iframe-container").innerHTML = `
+                    <p style="color: red;">Error: ${error.message}</p>
+                `;
+            }
+        }
+
+        // Call the function to fetch and display the iframe
+        fetchAndDisplayIframe();
+    </script>
+</body>
+</html>
