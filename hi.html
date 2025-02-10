@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multiplayer Iframe Game</title>
+    <script src="https://cdn.socket.io/4.4.1/socket.io.min.js"></script>
+    <style>
+        iframe { width: 800px; height: 600px; border: none; }
+    </style>
+</head>
+<body>
+
+    <h1>Multiplayer Game</h1>
+    <iframe id="gameFrame" src="https://games111-728d.onrender.com/"></iframe>
+
+    <script>
+        const socket = io("ws://localhost:3000"); // Change to your WebSocket server URL
+        const gameFrame = document.getElementById("gameFrame").contentWindow;
+
+        // Capture player inputs
+        window.addEventListener("keydown", (event) => {
+            socket.emit("playerInput", { key: event.key, type: "keydown" });
+        });
+
+        window.addEventListener("keyup", (event) => {
+            socket.emit("playerInput", { key: event.key, type: "keyup" });
+        });
+
+        // Listen for opponent's inputs and send them to iframe
+        socket.on("playerInput", (data) => {
+            gameFrame.postMessage(data, "*");
+        });
+
+        // Forward inputs to iframe
+        window.addEventListener("message", (event) => {
+            if (event.source === gameFrame) {
+                socket.emit("playerInput", event.data);
+            }
+        });
+    </script>
+
+</body>
+</html>
