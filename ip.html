@@ -1,11 +1,35 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>IP Info with ipdata</title>
+  <title>Full IP Info</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f7f7f7;
+    }
+    h1 {
+      color: #333;
+    }
+    .info-container {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .info-item {
+      margin-bottom: 10px;
+    }
+    .label {
+      font-weight: bold;
+      color: #555;
+    }
+  </style>
 </head>
 <body>
-  <h1>Visitor Info</h1>
-  <pre id="output">Loading...</pre>
+
+  <h1>Visitor IP Information</h1>
+  <div class="info-container" id="info">Loading...</div>
 
   <script>
     const apiKey = 'a99c3907565a6ea32f77a0cbf7e000ef1542132a84d723250a2d7b08'; // Replace with your ipdata API key
@@ -13,26 +37,35 @@
     fetch(`https://api.ipdata.co?api-key=${apiKey}`)
       .then(response => response.json())
       .then(data => {
-        const output = `
-IP: ${data.ip}
-City: ${data.city}
-Region: ${data.region}
-Country: ${data.country_name}
-Latitude: ${data.latitude}
-Longitude: ${data.longitude}
-ASN: ${data.asn.name}
-ISP: ${data.asn.domain}
-Timezone: ${data.time_zone.name}
-Threat Info:
-  Proxy: ${data.threat.is_proxy}
-  Tor: ${data.threat.is_tor}
-  VPN: ${data.threat.is_vpn}
+        const infoHTML = `
+          <div class="info-item"><span class="label">IP:</span> ${data.ip}</div>
+          <div class="info-item"><span class="label">City:</span> ${data.city}</div>
+          <div class="info-item"><span class="label">Region:</span> ${data.region}</div>
+          <div class="info-item"><span class="label">Postal Code:</span> ${data.postal}</div>
+          <div class="info-item"><span class="label">Country:</span> ${data.country_name} (${data.country_code})</div>
+          <div class="info-item"><span class="label">Continent:</span> ${data.continent_name} (${data.continent_code})</div>
+          <div class="info-item"><span class="label">Latitude:</span> ${data.latitude}</div>
+          <div class="info-item"><span class="label">Longitude:</span> ${data.longitude}</div>
+          <div class="info-item"><span class="label">Calling Code:</span> +${data.calling_code}</div>
+          <div class="info-item"><span class="label">Languages:</span> ${data.languages.map(lang => lang.name).join(', ')}</div>
+          <div class="info-item"><span class="label">Currency:</span> ${data.currency.name} (${data.currency.code})</div>
+          <div class="info-item"><span class="label">Time Zone:</span> ${data.time_zone.name} (UTC${data.time_zone.offset})</div>
+          <div class="info-item"><span class="label">Current Time:</span> ${data.time_zone.current_time}</div>
+          <div class="info-item"><span class="label">ASN:</span> ${data.asn.asn} - ${data.asn.name}</div>
+          <div class="info-item"><span class="label">ASN Domain:</span> ${data.asn.domain}</div>
+          <div class="info-item"><span class="label">ASN Route:</span> ${data.asn.route}</div>
+          <div class="info-item"><span class="label">ASN Type:</span> ${data.asn.type}</div>
+          <div class="info-item"><span class="label">Threat - Proxy:</span> ${data.threat.is_proxy}</div>
+          <div class="info-item"><span class="label">Threat - Tor:</span> ${data.threat.is_tor}</div>
+          <div class="info-item"><span class="label">Threat - VPN:</span> ${data.threat.is_vpn}</div>
+          <div class="info-item"><span class="label">Threat - Hosting Provider:</span> ${data.threat.is_datacenter}</div>
         `;
-        document.getElementById('output').textContent = output;
+        document.getElementById('info').innerHTML = infoHTML;
       })
       .catch(error => {
-        document.getElementById('output').textContent = 'Error: ' + error;
+        document.getElementById('info').innerHTML = 'Error fetching data: ' + error;
       });
   </script>
+
 </body>
 </html>
